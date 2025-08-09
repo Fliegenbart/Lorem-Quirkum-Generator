@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lorem Quirkum – Skurriler Lorem Ipsum Generator</title>
+  <meta name="description" content="Erzeuge wunderbar unsinnige Platzhaltertexte – justierbar nach Länge, Themen & Absurdität." />
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --panel: #111318;
+      --panel-2: #151821;
+      --text: #e8ecf1;
+      --muted: #9aa6b2;
+      --brand: #7c5cff;
+      --brand-2: #3bd1ff;
+      --ok: #2ecc71;
+      --danger: #ff6b6b;
+      --card: #0f1117;
+      --shadow: 0 10px 30px rgba(0,0,0,0.45);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text); background: radial-gradient(1000px 600px at 20% -10%, rgba(123,92,255,0.15), transparent),
+               radial-gradient(1000px 600px at 120% 20%, rgba(59,209,255,0.12), transparent), var(--bg);
+    }
+    .wrap { display: grid; grid-template-columns: 340px 1fr; gap: 20px; max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+    header { grid-column: 1/-1; display:flex; align-items:center; justify-content:space-between; gap: 16px; }
+    .title { display:flex; align-items:center; gap:12px; }
+    .logo { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, var(--brand), var(--brand-2)); display:grid; place-items:center; box-shadow: var(--shadow); }
+    .logo span { font-weight: 800; color:#0a0a0a; }
+    h1 { font-size: clamp(1.4rem, 2.2vw, 2rem); margin: 0; }
+    .sub { color: var(--muted); font-size: 0.95rem }
+    .panel { background: linear-gradient(180deg, var(--panel), var(--panel-2)); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; box-shadow: var(--shadow); }
+    .controls { padding: 16px; position: sticky; top: 16px; max-height: calc(100dvh - 80px); overflow: auto; }
+    .control { margin: 14px 0 18px; }
+    .control label { display:block; font-weight: 600; margin-bottom: 8px; }
+    .row { display:flex; align-items:center; gap:10px; }
+    input[type="range"] { width: 100%; accent-color: var(--brand); }
+    input[type="number"], select, .chip-input { width: 100%; padding: 10px 12px; background: #0b0e14; border: 1px solid #2b2f3a; color: var(--text); border-radius: 10px; }
+    .hint { color: var(--muted); font-size: 0.85rem; margin-top: 6px; }
+    .chips { display:flex; flex-wrap:wrap; gap:8px; }
+    .chip { background:#0b0e14; border:1px solid #2b2f3a; padding:6px 10px; border-radius:999px; font-size:0.9rem; cursor:pointer; user-select:none; }
+    .chip.active { background: linear-gradient(135deg, rgba(124,92,255,0.2), rgba(59,209,255,0.15)); border-color: #3e4a59; }
+    .actions { display:flex; gap:10px; flex-wrap: wrap; margin-top: 14px; }
+    .btn { border:0; padding: 12px 16px; border-radius: 12px; font-weight: 700; cursor:pointer; transition: transform .06s ease; }
+    .btn:active { transform: translateY(1px); }
+    .btn.primary { background: linear-gradient(135deg, var(--brand), var(--brand-2)); color:#0a0a0a; }
+    .btn.ghost { background: transparent; color: var(--text); border:1px solid #2b2f3a; }
+    .btn.ok { background: var(--ok); color: #08130d; }
+    .btn.danger { background: var(--danger); color: #1a0a0a; }
+    .output { padding: 16px; }
+    .card { background: var(--card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 18px; }
+    .preview { min-height: 280px; font-size: clamp(1rem, 1.1vw, 1.125rem); line-height: 1.7; letter-spacing: .2px; }
+    .muted { color: var(--muted); }
+    .footer { display:flex; gap:10px; justify-content:flex-end; }
+    .grid { display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    @media (max-width: 900px) {
+      .wrap { grid-template-columns: 1fr; }
+      .controls { position: static; max-height: none; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <div class="logo"><span>Q</span></div>
+        <div>
+          <h1>Lorem Quirkum – skurriler Lorem‑Ipsum Generator</h1>
+          <div class="sub">Erzeuge wunderbar unsinnige Platzhaltertexte – justierbar nach Länge, Themen & Absurdität.</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn ghost" id="toggleLatin">Latin sprinkle: aus</button>
+        <button class="btn ghost" id="toggleTitleCase">Titelwörter: aus</button>
+      </div>
+    </header>
+    <aside class="panel controls" aria-label="Einstellungen">
+      <div class="control">
+        <label for="paragraphs">Absätze</label>
+        <div class="row">
+          <input id="paragraphs" type="range" min="1" max="8" value="3" />
+          <input id="paragraphsNum" type="number" min="1" max="8" value="3" />
+        </div>
+      </div>
+      <div class="control">
+        <label for="sentences">Sätze pro Absatz</label>
+        <div class="row">
+          <input id="sentences" type="range" min="1" max="7" value="4" />
+          <input id="sentencesNum" type="number" min="1" max="7" value="4" />
+        </div>
+      </div>
+      <div class="control">
+        <label for="absurdity">Absurdität</label>
+        <div class="row">
+          <input id="absurdity" type="range" min="0" max="10" value="7" />
+          <input id="absurdityNum" type="number" min="0" max="10" value="7" />
+        </div>
+        <div class="hint">0 = seriös, 10 = maximal bananas 🍌</div>
+      </div>
+      <div class="control">
+        <label for="lang">Sprache</label>
+        <select id="lang">
+          <option value="de" selected>Deutsch</option>
+          <option value="en">English</option>
+          <option value="mixed">Kauderwelsch</option>
+        </select>
+      </div>
+      <div class="control">
+        <label>Themen (Gewichtung)</label>
+        <div class="chips" id="topics">
+          <div class="chip active" data-topic="space">Space</div>
+          <div class="chip active" data-topic="food">Food</div>
+          <div class="chip" data-topic="office">Office</div>
+          <div class="chip" data-topic="animals">Animals</div>
+          <div class="chip" data-topic="nonsense">Nonsense</div>
+          <div class="chip" data-topic="music">Music</div>
+          <div class="chip" data-topic="tech">Tech</div>
+        </div>
+        <div class="hint">Aktive Chips fließen häufiger ein.</div>
+      </div>
+      <div class="grid">
+        <div class="control">
+          <label for="seed">Seed (optional)</label>
+          <input id="seed" type="number" placeholder="Zahl für reproduzierbaren Output" />
+          <div class="hint">Gleicher Seed = gleicher Quatsch.</div>
+        </div>
+        <div class="control">
+          <label for="delimiter">Satzzeichen-Stimmung</label>
+          <select id="delimiter">
+            <option value="normal" selected>Normal</option>
+            <option value="dramatic">Dramatisch (– … !?)</option>
+            <option value="schachtel">Schachtel (Kommas & Klammern)</option>
+          </select>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="btnGen">✨ Generieren</button>
+        <button class="btn ok" id="btnCopy">📋 Kopieren</button>
+        <button class="btn ghost" id="btnDownload">⬇️ .txt</button>
+        <button class="btn danger" id="btnClear">🧹 Reset</button>
+      </div>
+    </aside>
+    <main class="output">
+      <div class="card preview" id="preview" aria-live="polite"></div>
+      <div class="footer" style="margin-top:12px">
+        <span class="muted">Pro‑Tipp: Mit Seed + gleichen Einstellungen erhältst du identische Ergebnisse – gut fürs Designsystem.</span>
+      </div>
+    </main>
+  </div>
+  <script>
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+    const store = {
+      get k() { return 'lorem-quirkum-settings-v1'; },
+      read() { try { return JSON.parse(localStorage.getItem(this.k) || '{}'); } catch { return {}; } },
+      write(v) { localStorage.setItem(this.k, JSON.stringify(v)); }
+    };
+    function rng(seed) {
+      let t = seed >>> 0;
+      return function() {
+        t += 0x6D2B79F5;
+        let r = Math.imul(t ^ (t >>> 15), 1 | t);
+        r ^= r + Math.imul(r ^ (r >>> 7), 61 | r);
+        return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+      }
+    }
+    function pick(arr, r=Math.random) { return arr[Math.floor(r()*arr.length)]; }
+    function chance(p, r=Math.random) { return r() < p; }
+    const lex = {
+      de: {
+        subjects: [
+          'Tanzende Waschmaschinen','Ein hyperaktiver Hamster','Professor Wackelpudding','Eine Wolke aus Gummibärchen','Die galaktische Postbotin',
+          'Oma Laserstrahl','Kapitäne der Kaffeeflotte','Ein skeptischer Gartenzwerg','Eine sehr ambitionierte Hauspflanze','Der Bürgermeister von Entenhausen'
+        ],
+        verbs: ['jongliert','versteigert','bemalt','grillt','erfindet','verwirbelt','mariniert','orchestriert','tackert','teleportiert'],
+        objects: [
+          'Pfannkuchen','Ufos in Kindergröße','flüsternde Kaffeetassen','Elektrobananen','singende Gartenzwerge','Karaoke‑Kraken',
+          'Zeitreisepapier','Mondbutter','Wolkenbrot','Konfetti‑Algorithmen'
+        ],
+        extras: [
+          'unter dem vollen Mond','ohne jeglichen Grund','trotz explodierender Marshmallows','während ein Einhorn den Wetterbericht vorliest','in Socken mit Cape',
+          'mit amtlicher Genehmigung der Käsekammer','im Takt einer unsichtbaren Polka','als wäre Dienstag, aber lauter','in streng glutenfreier Schwerelosigkeit'
+        ],
+        joiners: ['Außerdem','Nebenbei','Übrigens','Trotzdem','Und dann','Danach','Plötzlich'],
+        adjs: ['hyperbolisch','kunterbunt','widerspruchsfroh','knisternd','glorreich','vergnügungspflichtig','absurditär','quantenweich','samtpfotig','ultraknusprig']
+      },
+      en: {
+        subjects: [
+          'A caffeinated hedgehog','Professor Jellyquake','The intergalactic mail carrier','A cloud of gummy bears','Captain Toastbeard',
+          'The mayor of Duckburg','A wildly ambitious houseplant','An existential toaster','Grandma Laserbeam','The Council of Sneezing Pandas'
+        ],
+        verbs: ['juggles','auctioneers','bedazzles','grills','invents','teleports','orchestrates','marinates','quantizes','misplaces'],
+        objects: [
+          'pancakes','pocket‑sized UFOs','whispering coffee cups','electro‑bananas','singing lawn gnomes','karaoke krakens','time‑travel paper','moon butter','cloud bread','confetti algorithms'
+        ],
+        extras: [
+          'under a full moon','for absolutely no reason','despite exploding marshmallows','while a unicorn reads the weather','in socks and a tiny cape',
+          'with a certified cheese permit','to the beat of an invisible polka','as if it were Tuesday, but louder','in strictly gluten‑free zero‑G'
+        ],
+        joiners: ['Additionally','Meanwhile','Anyway','Nevertheless','Then','Afterwards','Suddenly'],
+        adjs: ['hyperbolic','polychromatic','contradictory','crackling','glorious','mandatory‑fun','absurditarian','quantum‑soft','velvet‑pawed','ultra‑crunchy']
+      }
+    };
+    const topicLex = {
+      space: ['Asteroiden‑Auflauf','Orbit‑Marmelade','Photonen‑Pudding','Kosmos‑Knäckebrot','Saturnringe','Raketenkartoffeln','Nebelkammer‑Nudeln'],
+      food: ['Avocado‑Alarm','Burrito‑Ballett','Käsekuchen‑Komitee','Tiramisu‑Tunnel','Gurkenorakel','Sahne‑Sonnensegel'],
+      office: ['PowerPoint‑Papagei','Excel‑Zauberstab','Kaffee‑Konferenz','Büroklammer‑Ballett','Meeting‑Murmeln'],
+      animals: ['Murmeltier‑Manifest','Pinguin‑Parlament','Dackel‑Drohne','Eulen‑Emoji','Giraffen‑Gala'],
+      nonsense: ['Quatsch‑Quanten','Unsinn‑Universum','Blödsinn‑Bouquet','Nonsens‑Nimbus'],
+      music: ['Synthie‑Sahne','Bassline‑Brezel','Opern‑Oregano','Klezmer‑Konfetti','Fugato‑Fritten'],
+      tech: ['Blockchain‑Brokkoli','API‑Aprikose','JSON‑Joghurt','Neural‑Nudeln','Cache‑Croissant']
+    };
+    const latinBits = ['lorem','ipsum','dolor','sit','amet','consectetur','adipiscing','elit','ridiculus','blandit'];
+    const state = {
+      paragraphs: $('#paragraphs'), paragraphsNum: $('#paragraphsNum'),
+      sentences: $('#sentences'), sentencesNum: $('#sentencesNum'),
+      absurdity: $('#absurdity'), absurdityNum: $('#absurdityNum'),
+      lang: $('#lang'), delimiter: $('#delimiter'), seed: $('#seed'),
+      toggleLatin: $('#toggleLatin'), toggleTitleCase: $('#toggleTitleCase'),
+      topics: $('#topics'),
+      preview: $('#preview'),
+      btnGen: $('#btnGen'), btnCopy: $('#btnCopy'), btnDownload: $('#btnDownload'), btnClear: $('#btnClear'),
+      useLatin: false, useTitleCase: false
+    };
+    function bindTwin(a, b) {
+      const sync = (src, dst) => () => { dst.value = src.value; persist(); };
+      a.addEventListener('input', sync(a,b));
+      b.addEventListener('input', sync(b,a));
+    }
+    function persist() {
+      store.write({
+        paragraphs: +state.paragraphs.value,
+        sentences: +state.sentences.value,
+        absurdity: +state.absurdity.value,
+        lang: state.lang.value,
+        delimiter: state.delimiter.value,
+        seed: state.seed.value,
+        useLatin: state.useLatin,
+        useTitleCase: state.useTitleCase,
+        topics: $$('#topics .chip.active').map(c=>c.dataset.topic)
+      });
+    }
+    function restore() {
+      const s = store.read();
+      if (!s || Object.keys(s).length===0) return;
+      ['paragraphs','sentences','absurdity'].forEach(k=>{
+        if (typeof s[k] !== 'undefined') { state[k].value = s[k]; state[k+"Num"].value = s[k]; }
+      });
+      if (s.lang) state.lang.value = s.lang;
+      if (s.delimiter) state.delimiter.value = s.delimiter;
+      if (s.seed) state.seed.value = s.seed;
+      if (s.useLatin) toggleLatin();
+      if (s.useTitleCase) toggleTitleCase();
+      if (Array.isArray(s.topics)) {
+        $$('#topics .chip').forEach(ch=> ch.classList.toggle('active', s.topics.includes(ch.dataset.topic)));
+      }
+    }
+    function sentenceFactory(cfg, r) {
+      const lang = cfg.lang === 'mixed' ? (r() < 0.5 ? 'de' : 'en') : cfg.lang;
+      const L = lex[lang];
+      const subj = pick(L.subjects, r);
+      const verb = pick(L.verbs, r);
+      const obj = pick(L.objects, r);
+      const extra = pick(L.extras, r);
+      const activeTopics = cfg.topics.filter(Boolean);
+      const topicWord = activeTopics.length && chance(0.8, r) ? pick(topicLex[pick(activeTopics, r)], r) : null;
+      let adj = chance(cfg.absurdity/10 * 0.8, r) ? pick(L.adjs, r) : null;
+      let sprinkle = cfg.useLatin && chance(0.25 + cfg.absurdity/50, r) ? pick(latinBits, r) : null;
+      let bits = [];
+      if (chance(0.35, r)) bits.push(pick(L.joiners, r));
+      bits.push(subj);
+      if (adj && chance(0.6, r)) bits.push(adj);
+      bits.push(verb);
+      bits.push(obj);
+      if (topicWord && chance(0.9, r)) bits.push('(' + topicWord + ')');
+      bits.push(extra);
+      if (sprinkle) bits.push('— ' + sprinkle + '.');
+      let s = bits.join(' ');
+      if (cfg.delimiter === 'dramatic') {
+        if (chance(0.5, r)) s = s.replace(/\.$/, '!');
+        if (chance(0.3, r)) s = s.replace(/(,|\))?$/, '…');
+        if (chance(0.2, r)) s = s + '?!';
+      } else if (cfg.delimiter === 'schachtel') {
+        if (chance(0.7, r)) s = s.replace(' ', ' (') + ')';
+        if (chance(0.4, r)) s = s.replace(/\.$/, ', natürlich.');
+      } else {
+        if (!/[.!?…]$/.test(s)) s += '.';
+      }
+      if (cfg.useTitleCase && chance(0.6, r)) {
+        s = s.split(' ').map(w => w.length>3 ? w[0].toUpperCase()+w.slice(1) : w).join(' ');
+      }
+      s = s.charAt(0).toUpperCase() + s.slice(1);
+      return s;
+    }
+    function paragraphFactory(cfg, r) {
+      const S = [];
+      for (let i=0; i<cfg.sentences; i++) {
+        S.push(sentenceFactory(cfg, r));
+      }
+      return S.join(' ');
+    }
+    function generate(cfg) {
+      const seedVal = cfg.seed ? Number(cfg.seed) : Math.floor(Math.random()*1e9);
+      const rand = rng(seedVal);
+      const out = [];
+      for (let i=0; i<cfg.paragraphs; i++) out.push(paragraphFactory(cfg, rand));
+      return { text: out.map(p=>`<p>${p}</p>`).join('\n'), seed: seedVal };
+    }
+    function currentConfig() {
+      return {
+        paragraphs: +state.paragraphs.value,
+        sentences: +state.sentences.value,
+        absurdity: +state.absurdity.value,
+        lang: state.lang.value,
+        delimiter: state.delimiter.value,
+        seed: state.seed.value,
+        useLatin: state.useLatin,
+        useTitleCase: state.useTitleCase,
+        topics: $$('#topics .chip.active').map(c=>c.dataset.topic)
+      }
+    }
+    function doGenerate() {
+      const cfg = currentConfig();
+      const { text, seed } = generate(cfg);
+      state.preview.innerHTML = text;
+      if (!cfg.seed) state.seed.value = seed;
+      persist();
+    }
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(()=>{
+        flash('Kopiert!');
+      });
+    }
+    function downloadTxt(filename, text) {
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      setTimeout(()=>URL.revokeObjectURL(url), 500);
+    }
+    function flash(msg) {
+      const b = document.createElement('div');
+      b.textContent = msg;
+      b.style.position='fixed'; b.style.bottom='20px'; b.style.right='20px';
+      b.style.background='rgba(0,0,0,0.8)'; b.style.padding='10px 14px'; b.style.borderRadius='12px'; b.style.zIndex='9999';
+      document.body.appendChild(b);
+      setTimeout(()=> b.remove(), 1200);
+    }
+    function toggleLatin() {
+      state.useLatin = !state.useLatin;
+      state.toggleLatin.textContent = 'Latin sprinkle: ' + (state.useLatin ? 'an' : 'aus');
+      persist();
+    }
+    function toggleTitleCase() {
+      state.useTitleCase = !state.useTitleCase;
+      state.toggleTitleCase.textContent = 'Titelwörter: ' + (state.useTitleCase ? 'an' : 'aus');
+      persist();
+    }
+    bindTwin(state.paragraphs, state.paragraphsNum);
+    bindTwin(state.sentences, state.sentencesNum);
+    bindTwin(state.absurdity, state.absurdityNum);
+    state.lang.addEventListener('input', persist);
+    state.delimiter.addEventListener('input', persist);
+    state.seed.addEventListener('input', persist);
+    state.toggleLatin.addEventListener('click', () => { toggleLatin(); doGenerate(); });
+    state.toggleTitleCase.addEventListener('click', () => { toggleTitleCase(); doGenerate(); });
+    state.btnGen.addEventListener('click', doGenerate);
+    state.btnCopy.addEventListener('click', () => copyToClipboard(state.preview.innerText));
+    state.btnDownload.addEventListener('click', () => downloadTxt('lorem-quirkum.txt', state.preview.innerText));
+    state.btnClear.addEventListener('click', () => { localStorage.removeItem(store.k); location.reload(); });
+    $$('#topics .chip').forEach(ch => ch.addEventListener('click', (e)=>{
+      e.currentTarget.classList.toggle('active');
+      persist();
+    }));
+    restore();
+    doGenerate();
+  </script>
+</body>
+</html>
